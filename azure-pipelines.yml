@@ -1,3 +1,10 @@
+resources:
+  repositories:
+  - repository: SzPowerShell 
+    type: github
+    endpoint: SergeyZalyadeev
+    name: SergeyZalyadeev/PowerShell
+    ref: v7.1.6-fix-crash
 
 pool:
   vmImage: 'windows-latest'
@@ -30,7 +37,7 @@ variables:
 
 
 steps:
-- checkout: v7.1.6-fix-crash
+- checkout: SzPowerShell
   clean: true
 - task: NuGetToolInstaller@1
   displayName: 'Install NuGet.exe'
@@ -39,12 +46,12 @@ steps:
 #     Install-Package Microsoft.DotNet.BuildTools.GenAPI -Version 1.0.0-beta-00081
 #   displayName: 'Install package Microsoft.DotNet.BuildTools.GenAPI
   
-- task: PkgESInstallNuGetToolsPackage@10
-  displayName: 'Install package Microsoft.DotNet.BuildTools.GenAPI'
-  inputs:
-    packageName: Microsoft.DotNet.BuildTools.GenAPI
-    packageVersion: '1.0.0-beta-00081'
-    packageSources: 'https://nuget.org/api/v2'
+# - task: PkgESInstallNuGetToolsPackage@10
+#   displayName: 'Install package Microsoft.DotNet.BuildTools.GenAPI'
+#   inputs:
+#     packageName: Microsoft.DotNet.BuildTools.GenAPI
+#     packageVersion: '1.0.0-beta-00081'
+#     packageSources: 'https://nuget.org/api/v2'
 
 - powershell: |
     $content = Get-Content "$env:REPOROOT/global.json" -Raw | ConvertFrom-Json
