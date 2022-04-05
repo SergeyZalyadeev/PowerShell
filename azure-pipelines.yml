@@ -30,10 +30,8 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   GenAPIToolPath: '$(System.ArtifactsDirectory)/GenAPI'
+  OutputPath: '$(System.ArtifactsDirectory)/Output'
   PackagePath: '$(System.ArtifactsDirectory)/UnifiedPackagePath'
-  winFxdPath: '$(System.ArtifactsDirectory)/winFxd'
-  winFxdWinDesktopPath: '$(System.ArtifactsDirectory)/winFxdWinDesktop'
-  linuxFxdPath: '$(System.ArtifactsDirectory)/linuxFxd'
 
 
 steps:
@@ -65,13 +63,13 @@ steps:
     restoreSolution: '$(solution)'
 
 - pwsh: |
-    Import-Module "$env:REPOROOT/build.psm1" -Force
+    Import-Module "./build.psm1" -Force
     Start-PSBootStrap -Verbose
   displayName: Bootstrap
 
 - pwsh: |
-    Import-Module "$env:REPOROOT/build.psm1" -Force
-    Start-PSBuild -Configuration Release
+    Import-Module "./build.psm1" -Force
+    Start-PSBuild -Configuration Release -Output '$(OutputPath)'
   displayName: Build
 
 
@@ -82,10 +80,10 @@ steps:
       $FilePackagePath = Join-Path -Path '${{ variables.PackagePath }}' -ChildPath $FileBaseName
       Write-Verbose -Verbose "FileName to package: $FileName"
       Write-Verbose -Verbose "FilePackage path: $FilePackagePath"
-      Import-Module -Name $env:REPOROOT\build.psm1
-      Import-Module -Name $env:REPOROOT\tools\packaging
+      Import-Module -Name .\build.psm1
+      Import-Module -Name .\tools\packaging
       Find-DotNet
-      New-ILNugetPackageFromSource -FileName $FileName -PackageVersion '${{ variables.PackageVersion }}' -PackagePath '${{ variables.PackagePath }}'
+      New-ILNugetPackageFromSource -FileName "$(OutputPath)/$FileName' -PackageVersion '7.1.6' -PackagePath '$(PackagePath)'
     displayName: 'Create NuGet Package for single file'
 
 - task: NuGetCommand@2
