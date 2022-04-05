@@ -54,7 +54,8 @@ steps:
 #     packageSources: 'https://nuget.org/api/v2'
 
 - powershell: |
-    $content = Get-Content "$env:REPOROOT/global.json" -Raw | ConvertFrom-Json
+    ls env:* | Out-Default
+    $content = Get-Content "./global.json" -Raw | ConvertFrom-Json
     $vstsCommandString = "vso[task.setvariable variable=SDKVersion]$($content.sdk.version)"
     Write-Host "sending " + $vstsCommandString
     Write-Host "##$vstsCommandString"
