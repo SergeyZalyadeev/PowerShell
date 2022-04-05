@@ -37,8 +37,8 @@ variables:
 steps:
 - checkout: SzPowerShell
   clean: true
-- task: NuGetToolInstaller@1
-  displayName: 'Install NuGet.exe'
+# - task: NuGetToolInstaller@1
+#   displayName: 'Install NuGet.exe'
   
 # - powershell: | 
 #     Install-Package Microsoft.DotNet.BuildTools.GenAPI -Version 1.0.0-beta-00081
@@ -58,9 +58,9 @@ steps:
     Write-Host "sending " + $vstsCommandString
     Write-Host "##$vstsCommandString"
   displayName: 'Find SDK version from global.json'
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+# - task: NuGetCommand@2
+#   inputs:
+#     restoreSolution: '$(solution)'
 
 - pwsh: |
     Import-Module "./build.psm1" -Force
@@ -83,7 +83,7 @@ steps:
       Import-Module -Name .\build.psm1
       Import-Module -Name .\tools\packaging
       Find-DotNet
-      New-ILNugetPackageFromSource -FileName "$(OutputPath)/$FileName' -PackageVersion '7.1.6' -PackagePath '$(PackagePath)'
+      New-ILNugetPackageFromSource -FileName "$(OutputPath)/net5.0/$FileName' -PackageVersion '7.1.6' -PackagePath '$(PackagePath)'
     displayName: 'Create NuGet Package for single file'
 
 - task: NuGetCommand@2
