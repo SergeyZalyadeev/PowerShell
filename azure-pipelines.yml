@@ -64,7 +64,7 @@ steps:
   displayName: Build
 
 
-- ${{ each value in ListOfFiles }}:
+- ${{ each value in variables.ListOfFiles }}:
   - pwsh: |
       $FileName = '${{ value }}'
       $FileBaseName = [System.IO.Path]::GetFileNameWithoutExtension($FileName)
