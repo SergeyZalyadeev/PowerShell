@@ -12,8 +12,6 @@ variables:
   winFxdWinDesktopPath: '$(System.ArtifactsDirectory)/winFxdWinDesktop'
   linuxFxdPath: '$(System.ArtifactsDirectory)/linuxFxd'
   ListOfFiles:
-    type: object
-    default:
     - Microsoft.Management.Infrastructure.CimCmdlets.dll
     - Microsoft.PowerShell.Commands.Diagnostics.dll
     - Microsoft.PowerShell.Commands.Management.dll
