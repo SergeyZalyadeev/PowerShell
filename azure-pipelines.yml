@@ -86,3 +86,10 @@ steps:
       Find-DotNet
       New-ILNugetPackageFromSource -FileName $FileName -PackageVersion '${{ variables.PackageVersion }}' -PackagePath '${{ variables.PackagePath }}'
     displayName: 'Create NuGet Package for single file'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'c48efcd1-08a6-4713-a025-af01a4a86cbc/d7bd9370-ffc0-4470-99ba-aceee9f7ef32'
