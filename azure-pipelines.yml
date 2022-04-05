@@ -47,10 +47,12 @@ steps:
   displayName: Build
 
 - pwsh: |
-    Write-Host '$(Build.SourceDirectory)'
-    ls $(Build.SourceDirectory)\tools\packaging\nugetOutput\*.nupkg | Out-Default
-    Write-Host '$(Agent.BuildDirectory)'
-    ls $(Agent.BuildDirectory)\PowerShell\tools\packaging\nugetOutput\*.nupkg | Out-Default
+    Write-Host $env:BUILD_SOURCESDIRECTORY
+    ls $env:BUILD_SOURCESDIRECTORY\tools\packaging\nugetOutput\*.nupkg | Out-Default
+    Write-Host $env:Agent_BuildDirectory
+    ls $env:Agent_BuildDirectory\PowerShell\tools\packaging\nugetOutput\*.nupkg | Out-Default
+    $nupkgFile = ls $env:BUILD_SOURCESDIRECTORY\tools\packaging\nugetOutput\*.nupkg | select -First 1
+    Write-Host "##vso[task.setvariable variable=NuPkgFile]$nupkgFile"
   displayName: test1
 
 - task: NuGetCommand@2
