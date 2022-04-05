@@ -48,8 +48,9 @@ steps:
     #Start-PSBuild -Configuration Release -Output '$(OutputPath)'
     subst B: $(Agent.BuildDirectory)
     set-location B:\PowerShell
+    Get-Location | Out-Default
     Write-Host "Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release"
-    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release -Output '$(OutputPath)'
+    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release
     Write-Host "Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64"
     Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64
   displayName: Build
