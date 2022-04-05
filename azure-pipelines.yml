@@ -50,7 +50,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.BuildDirectory)/tools/packaging/nugetOutput/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    packagesToPush: '$(Build.SourceDirectory)\tools\packaging\nugetOutput\*.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'c48efcd1-08a6-4713-a025-af01a4a86cbc/d7bd9370-ffc0-4470-99ba-aceee9f7ef32'
   displayName: 'Push nuget package'
