@@ -21,6 +21,7 @@ variables:
 steps:
 - checkout: SzPowerShell
   clean: true
+  path: PowerShell
 # - task: NuGetToolInstaller@1
 #   displayName: 'Install NuGet.exe'
   
@@ -45,10 +46,13 @@ steps:
     Import-Module "./build.psm1" -Force
     Import-Module ./tools/packaging
     #Start-PSBuild -Configuration Release -Output '$(OutputPath)'
+    subst B: $(Agent.BuildDirectory)
+    pushd B:\PowerShell
     Write-Host "Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release"
     Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release -Output '$(OutputPath)'
     Write-Host "Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64"
     Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64
+    popd
   displayName: Build
 
 
