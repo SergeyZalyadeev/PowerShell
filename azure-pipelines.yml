@@ -73,19 +73,24 @@ steps:
   displayName: Build
 
 
-- ${{ each value in parameters.ListOfFiles }}:
-  - pwsh: |
-      $FileName = '${{ value }}'
-      $FileBaseName = [System.IO.Path]::GetFileNameWithoutExtension($FileName)
-      $FilePackagePath = Join-Path -Path '${{ variables.PackagePath }}' -ChildPath $FileBaseName
-      Write-Verbose -Verbose "FileName to package: $FileName"
-      Write-Verbose -Verbose "FilePackage path: $FilePackagePath"
-      Import-Module -Name .\build.psm1
-      Import-Module -Name .\tools\packaging
-      Find-DotNet
-      New-ILNugetPackageFromSource -FileName "$(OutputPath)/net5.0/$FileName" -PackageVersion '7.1.6' -PackagePath "$(OutputPath)/net5.0"
-    displayName: 'Create NuGet Package for single file'
+# - ${{ each value in parameters.ListOfFiles }}:
+#   - pwsh: |
+#       $FileName = '${{ value }}'
+#       $FileBaseName = [System.IO.Path]::GetFileNameWithoutExtension($FileName)
+#       $FilePackagePath = Join-Path -Path '${{ variables.PackagePath }}' -ChildPath $FileBaseName
+#       Write-Verbose -Verbose "FileName to package: $FileName"
+#       Write-Verbose -Verbose "FilePackage path: $FilePackagePath"
+#       Import-Module -Name .\build.psm1
+#       Import-Module -Name .\tools\packaging
+#       Find-DotNet
+#       New-ILNugetPackageFromSource -FileName $FileName -PackageVersion '7.1.6' -PackagePath "$(OutputPath)/net5.0"
+#     displayName: 'Create NuGet Package for single file'
 
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'tools/packaging/projects/nuget/powershell.nuspec'
+    versioningScheme: 'off'
 - task: NuGetCommand@2
   inputs:
     command: 'push'
