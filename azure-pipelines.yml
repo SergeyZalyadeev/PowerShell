@@ -1,0 +1,59 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+- v7.1.6-fix-crash
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  GenAPIToolPath: '$(System.ArtifactsDirectory)/GenAPI'
+  PackagePath: '$(System.ArtifactsDirectory)/UnifiedPackagePath'
+  winFxdPath: '$(System.ArtifactsDirectory)/winFxd'
+  winFxdWinDesktopPath: '$(System.ArtifactsDirectory)/winFxdWinDesktop'
+  linuxFxdPath: '$(System.ArtifactsDirectory)/linuxFxd'
+
+steps:
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet.exe'
+- task: PkgESInstallNuGetToolsPackage@10
+  displayName: 'Install package Microsoft.DotNet.BuildTools.GenAPI'
+  inputs:
+    packageName: Microsoft.DotNet.BuildTools.GenAPI
+    packageVersion: '1.0.0-beta-00081'
+    packageSources: 'https://nuget.org/api/v2'
+    installRoot: '$(GenAPIToolPath)'
+
+- powershell: |
+    $content = Get-Content "$env:REPOROOT/global.json" -Raw | ConvertFrom-Json
+    $vstsCommandString = "vso[task.setvariable variable=SDKVersion]$($content.sdk.version)"
+    Write-Host "sending " + $vstsCommandString
+    Write-Host "##$vstsCommandString"
+  displayName: 'Find SDK version from global.json'
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- pwsh: |
+    Import-Module "$env:REPOROOT/build.psm1" -Force
+    Start-PSBootStrap -Verbose
+  displayName: Bootstrap
+
+- pwsh: |
+    Import-Module "$env:REPOROOT/build.psm1" -Force
+    Start-PSBuild -Configuration Release
+  displayName: Build
+
+- template: tools/releaseBuild/azureDevOps/templates/nuget-pkg-sbom.yml
+  parameters:
+    PackageVersion: $(Version)
+    PackagePath: $(PackagePath)
+    WinFxdPath: $(winFxdPath)
+    LinuxFxdPath: $(linuxFxdPath)
+    GenAPIToolPath: $(GenAPIToolPath)
