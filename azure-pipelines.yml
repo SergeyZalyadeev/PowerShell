@@ -9,22 +9,6 @@ resources:
 pool:
   vmImage: 'windows-latest'
 
-parameters:
-  - name: ListOfFiles
-    type: object
-    default:
-    - Microsoft.Management.Infrastructure.CimCmdlets.dll
-    - Microsoft.PowerShell.Commands.Diagnostics.dll
-    - Microsoft.PowerShell.Commands.Management.dll
-    - Microsoft.PowerShell.Commands.Utility.dll
-    - Microsoft.PowerShell.ConsoleHost.dll
-    - Microsoft.PowerShell.CoreCLR.Eventing.dll
-    - Microsoft.PowerShell.Security.dll
-    - Microsoft.PowerShell.SDK.dll
-    - Microsoft.WSMan.Management.dll
-    - Microsoft.WSMan.Runtime.dll
-    - System.Management.Automation.dll
-
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
@@ -40,16 +24,6 @@ steps:
 # - task: NuGetToolInstaller@1
 #   displayName: 'Install NuGet.exe'
   
-# - powershell: | 
-#     Install-Package Microsoft.DotNet.BuildTools.GenAPI -Version 1.0.0-beta-00081
-#   displayName: 'Install package Microsoft.DotNet.BuildTools.GenAPI
-  
-# - task: PkgESInstallNuGetToolsPackage@10
-#   displayName: 'Install package Microsoft.DotNet.BuildTools.GenAPI'
-#   inputs:
-#     packageName: Microsoft.DotNet.BuildTools.GenAPI
-#     packageVersion: '1.0.0-beta-00081'
-#     packageSources: 'https://nuget.org/api/v2'
 
 - powershell: |
     ls env:* | Out-Default
@@ -71,7 +45,9 @@ steps:
     Import-Module "./build.psm1" -Force
     Import-Module ./tools/packaging
     #Start-PSBuild -Configuration Release -Output '$(OutputPath)'
-    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release
+    Write-Host "Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release"
+    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release -Output '$(OutputPath)'
+    Write-Host "Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64"
     Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64
   displayName: Build
 
