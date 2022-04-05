@@ -2,16 +2,10 @@
 pool:
   vmImage: 'windows-latest'
 
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-  GenAPIToolPath: '$(System.ArtifactsDirectory)/GenAPI'
-  PackagePath: '$(System.ArtifactsDirectory)/UnifiedPackagePath'
-  winFxdPath: '$(System.ArtifactsDirectory)/winFxd'
-  winFxdWinDesktopPath: '$(System.ArtifactsDirectory)/winFxdWinDesktop'
-  linuxFxdPath: '$(System.ArtifactsDirectory)/linuxFxd'
-  ListOfFiles:
+parameters:
+  - name: ListOfFiles
+    type: object
+    default:
     - Microsoft.Management.Infrastructure.CimCmdlets.dll
     - Microsoft.PowerShell.Commands.Diagnostics.dll
     - Microsoft.PowerShell.Commands.Management.dll
@@ -23,6 +17,17 @@ variables:
     - Microsoft.WSMan.Management.dll
     - Microsoft.WSMan.Runtime.dll
     - System.Management.Automation.dll
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  GenAPIToolPath: '$(System.ArtifactsDirectory)/GenAPI'
+  PackagePath: '$(System.ArtifactsDirectory)/UnifiedPackagePath'
+  winFxdPath: '$(System.ArtifactsDirectory)/winFxd'
+  winFxdWinDesktopPath: '$(System.ArtifactsDirectory)/winFxdWinDesktop'
+  linuxFxdPath: '$(System.ArtifactsDirectory)/linuxFxd'
+
 
 steps:
 - checkout: v7.1.6-fix-crash
