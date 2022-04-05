@@ -50,7 +50,7 @@ steps:
     Import-Module ./tools/packaging
     #Start-PSBuild -Configuration Release -Output '$(OutputPath)'
     Write-Host "Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release"
-    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release
+    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release -Output 'B:\PowerShell\src\powershell-win-core\bin\Release\net5.0\win7-x64\'
     Write-Host "Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64"
     Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64
     popd
