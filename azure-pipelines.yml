@@ -33,8 +33,10 @@ steps:
   displayName: Bootstrap
 
 - pwsh: |
+    git branch | Out-Default
+    git describe --abbrev=60 --long | Out-Default
     Import-Module "./build.psm1" -Force
-    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release
+    #Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release
     $dirs=@(
       'System.Management.Automation',
       'Microsoft.PowerShell.Commands.Management',
@@ -49,7 +51,7 @@ steps:
     foreach($d in $dirs){
       pushd src/$d
       dotnet pack -c Release
-      ls .\bin\Release\*.nupkg | copy -Destination ..\Output\
+      ls .\bin\Release\*.nupkg | copy -Destination ..\Output
       popd
     }
     
