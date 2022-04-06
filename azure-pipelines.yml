@@ -42,7 +42,8 @@ steps:
       'Microsoft.PowerShell.ConsoleHost',
       'Microsoft.WSMan.Management',
       'Microsoft.WSMan.Runtime',
-      'Microsoft.Management.Infrastructure.CimCmdlets'
+      'Microsoft.Management.Infrastructure.CimCmdlets',
+      'Microsoft.PowerShell.MarkdownRender'
     )
     mkdir $env:BUILD_SOURCESDIRECTORY\Output
     foreach($d in $dirs){
