@@ -35,10 +35,25 @@ steps:
 - pwsh: |
     Import-Module "./build.psm1" -Force
     Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release
-    pushd src/System.Management.Automation
-    dotnet pack -c Release
-    ls .\bin\Release\*.nupkg | Out-Default
-    $nupkgFile = ls .\bin\Release\*.nupkg | select -First 1
+    $dirs=@(
+      'System.Management.Automation',
+      'Microsoft.PowerShell.Commands.Management',
+      'Microsoft.PowerShell.Commands.Utility',
+      'Microsoft.PowerShell.ConsoleHost',
+      'Microsoft.PowerShell.Security',
+      'Microsoft.WSMan.Management',
+      'Microsoft.PowerShell.Commands.Diagnostics',
+      'Microsoft.Management.Infrastructure.CimCmdlets'
+    )
+    mkdir Output
+    foreach($d in $dirs){
+      pushd src/$d
+      dotnet pack -c Release
+      ls .\bin\Release\*.nupkg | copy -Destination ..\Output\
+      popd
+    }
+    
+    $nupkgFiles = ls .\Output\*.nupkg 
     Write-Host "##vso[task.setvariable variable=NuPkgFile]$nupkgFile"
     popd
   displayName: Build and pack
@@ -69,7 +84,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '$(NuPkgFile)'
+    packagesToPush: '.\Output\*.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'c48efcd1-08a6-4713-a025-af01a4a86cbc/d7bd9370-ffc0-4470-99ba-aceee9f7ef32'
   displayName: 'Push nuget package'
