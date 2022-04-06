@@ -37,10 +37,11 @@ steps:
       'System.Management.Automation',
       'Microsoft.PowerShell.Security',
       'Microsoft.PowerShell.Commands.Management',
+      'Microsoft.PowerShell.Commands.Diagnostics',
       'Microsoft.PowerShell.Commands.Utility',
       'Microsoft.PowerShell.ConsoleHost',
       'Microsoft.WSMan.Management',
-      'Microsoft.PowerShell.Commands.Diagnostics',
+      'Microsoft.WSMan.Runtime',
       'Microsoft.Management.Infrastructure.CimCmdlets'
     )
     mkdir $env:BUILD_SOURCESDIRECTORY\Output
