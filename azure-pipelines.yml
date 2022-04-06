@@ -4,7 +4,7 @@ resources:
     type: github
     endpoint: SergeyZalyadeev
     name: SergeyZalyadeev/PowerShell
-    ref: v7.1.6-fix-crash
+    ref: v7.1.7-fix
 
 pool:
   vmImage: 'windows-latest'
