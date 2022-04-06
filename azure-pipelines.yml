@@ -34,11 +34,14 @@ steps:
 
 - pwsh: |
     Import-Module "./build.psm1" -Force
+    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release
     pushd src/System.Management.Automation
     dotnet pack -c Release
     ls .\bin\Release\*.nupkg | Out-Default
     $nupkgFile = ls .\bin\Release\*.nupkg | select -First 1
     Write-Host "##vso[task.setvariable variable=NuPkgFile]$nupkgFile"
+    popd
+  displayName: Build and pack
 
 # - pwsh: |
 #     subst B: $(Agent.BuildDirectory)
