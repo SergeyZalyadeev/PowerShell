@@ -33,32 +33,40 @@ steps:
   displayName: Bootstrap
 
 - pwsh: |
-    subst B: $(Agent.BuildDirectory)
-    pushd B:\PowerShell
-    Get-Location | Out-Default
     Import-Module "./build.psm1" -Force
-    Import-Module ./tools/packaging
-    #Start-PSBuild -Configuration Release -Output '$(OutputPath)'
-    Write-Host "Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release"
-    Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release -Output 'B:\PowerShell\src\powershell-win-core\bin\Release\net5.0\win7-x64\'
-    Write-Host "Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64"
-    Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64
-    popd
-  displayName: Build
-
-- pwsh: |
-    Write-Host $env:BUILD_SOURCESDIRECTORY
-    ls $env:BUILD_SOURCESDIRECTORY\tools\packaging\nugetOutput\*.nupkg | Out-Default
-    Write-Host $env:Agent_BuildDirectory
-    ls $env:Agent_BuildDirectory\PowerShell\tools\packaging\nugetOutput\*.nupkg | Out-Default
-    $nupkgFile = ls $env:BUILD_SOURCESDIRECTORY\tools\packaging\nugetOutput\*.nupkg | select -First 1
+    pushd src/System.Management.Automation
+    dotnet pack -c Release
+    ls .\bin\Release\*.nupkg | Out-Default
+    $nupkgFile = ls .\bin\Release\*.nupkg | select -First 1
     Write-Host "##vso[task.setvariable variable=NuPkgFile]$nupkgFile"
-  displayName: test1
+
+# - pwsh: |
+#     subst B: $(Agent.BuildDirectory)
+#     pushd B:\PowerShell
+#     Get-Location | Out-Default
+#     Import-Module "./build.psm1" -Force
+#     Import-Module ./tools/packaging
+#     #Start-PSBuild -Configuration Release -Output '$(OutputPath)'
+#     Write-Host "Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release"
+#     Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release -Output 'B:\PowerShell\src\powershell-win-core\bin\Release\net5.0\win7-x64\'
+#     Write-Host "Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64"
+#     Start-PSPackage -Version 7.1.6 -Type nupkg -WindowsRuntime win7-x64
+#     popd
+#   displayName: Build
+
+# - pwsh: |
+#     Write-Host $env:BUILD_SOURCESDIRECTORY
+#     ls $env:BUILD_SOURCESDIRECTORY\tools\packaging\nugetOutput\*.nupkg | Out-Default
+#     Write-Host $env:Agent_BuildDirectory
+#     ls $env:Agent_BuildDirectory\PowerShell\tools\packaging\nugetOutput\*.nupkg | Out-Default
+#     $nupkgFile = ls $env:BUILD_SOURCESDIRECTORY\tools\packaging\nugetOutput\*.nupkg | select -First 1
+#     Write-Host "##vso[task.setvariable variable=NuPkgFile]$nupkgFile"
+#   displayName: test1
 
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '$(Agent.BuildDirectory)\PowerShell\tools\packaging\nugetOutput\*.nupkg'
+    packagesToPush: '$(NuPkgFile)'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'c48efcd1-08a6-4713-a025-af01a4a86cbc/d7bd9370-ffc0-4470-99ba-aceee9f7ef32'
   displayName: 'Push nuget package'
