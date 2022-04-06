@@ -38,11 +38,12 @@ steps:
     Import-Module "./build.psm1" -Force
     #Start-PSBuild -Clean -CrossGen -PSModuleRestore -Runtime win7-x64 -Configuration Release
     $dirs=@(
+      'Microsoft.PowerShell.CoreCLR.Eventing',
       'System.Management.Automation',
+      'Microsoft.PowerShell.Security',
       'Microsoft.PowerShell.Commands.Management',
       'Microsoft.PowerShell.Commands.Utility',
       'Microsoft.PowerShell.ConsoleHost',
-      'Microsoft.PowerShell.Security',
       'Microsoft.WSMan.Management',
       'Microsoft.PowerShell.Commands.Diagnostics',
       'Microsoft.Management.Infrastructure.CimCmdlets'
