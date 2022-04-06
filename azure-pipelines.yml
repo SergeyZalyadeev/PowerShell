@@ -47,15 +47,15 @@ steps:
       'Microsoft.PowerShell.Commands.Diagnostics',
       'Microsoft.Management.Infrastructure.CimCmdlets'
     )
-    mkdir Output
+    mkdir $env:BUILD_SOURCESDIRECTORY\Output
     foreach($d in $dirs){
       pushd src/$d
       dotnet pack -c Release
-      ls .\bin\Release\*.nupkg | copy -Destination ..\Output
+      ls *.nupkg -Recurse | copy -Destination $env:BUILD_SOURCESDIRECTORY\Output
       popd
     }
     
-    $nupkgFiles = ls .\Output\*.nupkg 
+    $nupkgFiles = ls .\Output\*.nupkg -Recurse
     Write-Host "##vso[task.setvariable variable=NuPkgFile]$nupkgFile"
     popd
   displayName: Build and pack
@@ -86,7 +86,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'push'
-    packagesToPush: '.\Output\*.nupkg'
+    packagesToPush: '$(BUILD.SOURCESDIRECTORY)\Output\*.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'c48efcd1-08a6-4713-a025-af01a4a86cbc/d7bd9370-ffc0-4470-99ba-aceee9f7ef32'
   displayName: 'Push nuget package'
