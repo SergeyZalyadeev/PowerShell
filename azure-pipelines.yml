@@ -18,16 +18,12 @@ steps:
   clean: true
   path: PowerShell
   
-
-- powershell: |
-    ls env:* | Out-Default
+- pwsh: |
+    #ls env:* | Out-Default
     $content = Get-Content "./global.json" -Raw | ConvertFrom-Json
     $vstsCommandString = "vso[task.setvariable variable=SDKVersion]$($content.sdk.version)"
     Write-Host "sending " + $vstsCommandString
     Write-Host "##$vstsCommandString"
-  displayName: 'Find SDK version from global.json'
-
-- pwsh: |
     Import-Module "./build.psm1" -Force
     Start-PSBootStrap -Verbose
   displayName: Bootstrap
